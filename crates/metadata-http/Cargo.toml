@@ -1,0 +1,10 @@
+[package]
+name = "metadata-http"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+axum.workspace = true
+
+[lib]
+name = "metadata_http"
