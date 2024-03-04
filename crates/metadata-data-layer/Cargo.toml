@@ -1,0 +1,10 @@
+[package]
+name = "metadata-data-layer"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sqlx = { version="^0.7.3", features = ["chrono", "ipnetwork", "json", "postgres", "runtime-tokio", "tls-rustls", "uuid"] }
+
+[lib]
+name = "metadata_data_layer"
