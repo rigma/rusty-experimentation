@@ -1,4 +1,4 @@
-use crate::{repository, state::PoolState};
+use super::{repository, state::PoolState};
 use async_trait::async_trait;
 use axum_core::extract::{FromRef, FromRequestParts};
 use http::request::Parts;
