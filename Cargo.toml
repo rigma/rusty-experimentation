@@ -7,6 +7,10 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace.dependencies]
+async-trait = "*"
 axum = "^0.7.4"
+axum-core = "*"
+http = "^1.1.0"
+serde = { version = "^1.0.0", features = ["derive"] }
 tokio = { version = "^1.36.0", features = ["macros", "net", "parking_lot", "rt-multi-thread", "signal"] }
 tracing = "^0.1.40"

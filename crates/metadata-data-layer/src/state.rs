@@ -1,7 +1,7 @@
 use sqlx::{
     self,
+    pool::{Pool, PoolConnection},
     postgres::{PgConnectOptions, Postgres},
-    Pool,
 };
 use std::{borrow::Cow, process::Command};
 
@@ -19,6 +19,11 @@ impl PoolState {
     #[inline]
     pub fn from_env<'a>() -> PoolStateBuilder<'a> {
         Default::default()
+    }
+
+    #[inline]
+    pub async fn begin_connection(&self) -> Result<PoolConnection<Postgres>, sqlx::Error> {
+        self.inner.acquire().await
     }
 }
 
