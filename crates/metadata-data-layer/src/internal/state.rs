@@ -3,11 +3,11 @@ use sqlx::{
     pool::{Pool, PoolConnection},
     postgres::{PgConnectOptions, Postgres},
 };
-use std::{borrow::Cow, process::Command};
+use std::{borrow::Cow, process::Command, sync::Arc};
 
 #[derive(Clone, Debug)]
 pub struct PoolState {
-    inner: Pool<Postgres>,
+    inner: Arc<Pool<Postgres>>,
 }
 
 impl PoolState {
@@ -19,6 +19,11 @@ impl PoolState {
     #[inline]
     pub fn from_env<'a>() -> PoolStateBuilder<'a> {
         Default::default()
+    }
+
+    #[inline]
+    pub fn get_ref(&self) -> Arc<Pool<Postgres>> {
+        Arc::clone(&self.inner)
     }
 
     #[inline]
@@ -134,7 +139,7 @@ impl<'a> PoolStateBuilder<'a> {
         }
 
         PoolState {
-            inner: Pool::connect_lazy_with(options),
+            inner: Arc::new(Pool::connect_lazy_with(options)),
         }
     }
 }

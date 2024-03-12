@@ -1,7 +1,9 @@
-use sqlx::{pool::PoolConnection, Database};
+use std::sync::Arc;
 
 pub trait Repository {
-    fn from_connection<DB>(conn: PoolConnection<DB>) -> Self
+    type DB;
+
+    fn from_pool(pool: Arc<sqlx::Pool<Self::DB>>) -> Self
     where
-        DB: Database;
+        <Self as Repository>::DB: sqlx::Database;
 }
