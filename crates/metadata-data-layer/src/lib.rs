@@ -1,5 +1,6 @@
 mod internal;
 pub mod models;
+pub mod repositories;
 
 pub use internal::state::PoolState;
 pub mod extract {
