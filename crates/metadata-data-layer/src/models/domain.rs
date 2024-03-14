@@ -17,7 +17,7 @@ impl Domain {
         Self {
             id: Uuid::now_v7(),
             name: name.to_string().to_lowercase(),
-            created_at: now.clone(),
+            created_at: now,
             updated_at: now,
         }
     }
