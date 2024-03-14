@@ -12,7 +12,7 @@ pub struct PoolState {
 
 impl PoolState {
     #[inline]
-    pub fn new<'a>() -> PoolStateBuilder<'a> {
+    pub fn builder<'a>() -> PoolStateBuilder<'a> {
         PoolStateBuilder::new()
     }
 
