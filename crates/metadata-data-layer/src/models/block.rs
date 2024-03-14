@@ -19,7 +19,8 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new() -> BlockBuilder {
+    #[inline]
+    pub fn builder() -> BlockBuilder {
         BlockBuilder::default()
     }
 }
@@ -89,7 +90,7 @@ impl BlockBuilder {
             id: Uuid::now_v7(),
             parent,
             name,
-            created_at: now.clone(),
+            created_at: now,
             updated_at: now,
         })
     }
