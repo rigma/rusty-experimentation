@@ -5,6 +5,8 @@ edition.workspace = true
 
 [dependencies]
 axum.workspace = true
+metadata-data-layer = { path = "../metadata-data-layer" }
+metadata-http = { path = "../metadata-http" }
 tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "^0.3.18", features = ["env-filter", "json", "parking_lot", "smallvec"] }
