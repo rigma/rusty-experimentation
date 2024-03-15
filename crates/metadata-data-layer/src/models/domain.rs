@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use std::fmt;
 use uuid::Uuid;
 
-#[derive(Clone, Debug, sqlx::FromRow)]
+#[derive(Clone, Debug, serde::Serialize, sqlx::FromRow)]
 pub struct Domain {
     pub id: Uuid,
     pub name: String,

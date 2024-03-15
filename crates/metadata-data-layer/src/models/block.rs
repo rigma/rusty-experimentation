@@ -3,13 +3,14 @@ use sqlx::{postgres::PgRow, FromRow, Row};
 use std::fmt;
 use uuid::Uuid;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize)]
+#[serde(tag = "type")]
 pub enum Parent {
     Block(Uuid),
     Domain(Uuid),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct Block {
     pub id: Uuid,
     pub parent: Parent,
