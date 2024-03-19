@@ -1,0 +1,13 @@
+[package]
+name = "metadata-data-layer-utils"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "metadata_data_layer_utils"
+
+[dependencies]
+async-trait.workspace = true
+axum-core.workspace = true
+http = "^1.1.0"
+sqlx = { workspace = true, features = ["postgres"] }

@@ -1,4 +1,4 @@
-use metadata_data_layer::PoolState;
+use metadata_data_layer_utils::PoolState;
 use metadata_http::{init_router, AppState};
 use tokio::net::TcpListener;
 use tracing::level_filters::LevelFilter;

@@ -10,9 +10,9 @@ edition = "2021"
 async-trait = "*"
 axum = "^0.7.4"
 axum-core = "*"
-chrono = "^0.4.0"
-http = "^1.1.0"
+chrono = "^0.4.35"
 serde = { version = "^1.0.0", features = ["derive"] }
+sqlx = { version = "^0.7.4" }
 tokio = { version = "^1.36.0", features = ["macros", "net", "parking_lot", "rt-multi-thread", "signal"] }
 tracing = "^0.1.40"
 uuid = "^1.7.0"

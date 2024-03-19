@@ -1,5 +1,6 @@
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Json};
-use metadata_data_layer::{extract::Repository, repositories::DomainRepository};
+use metadata_data_layer::repositories::DomainRepository;
+use metadata_data_layer_utils::extract::Repository;
 
 pub(super) async fn show(
     Path(domain_name): Path<String>,

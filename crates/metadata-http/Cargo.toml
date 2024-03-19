@@ -9,3 +9,4 @@ name = "metadata_http"
 [dependencies]
 axum.workspace = true
 metadata-data-layer = { path = "../metadata-data-layer" }
+metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }

@@ -1,4 +1,4 @@
-use super::{repository, state::PoolState};
+use super::{repository, PoolState};
 use async_trait::async_trait;
 use axum_core::extract::{FromRef, FromRequestParts};
 use http::request::Parts;
@@ -20,6 +20,6 @@ where
     async fn from_request_parts(_: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
         let pool_state = Arc::from_ref(state);
 
-        Ok(Self(T::from_pool(pool_state.get_ref())))
+        Ok(Self(T::from_pool(pool_state.downcast_ref())))
     }
 }

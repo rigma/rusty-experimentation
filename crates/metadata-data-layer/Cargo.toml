@@ -6,10 +6,10 @@ edition.workspace = true
 [dependencies]
 async-trait.workspace = true
 axum-core.workspace = true
-chrono = { workspace = true, features = ["serde"]}
-http.workspace = true
+chrono = { workspace = true, features = ["serde"] }
+metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }
 serde.workspace = true
-sqlx = { version="^0.7.3", features = ["chrono", "ipnetwork", "json", "postgres", "runtime-tokio", "tls-rustls", "uuid"] }
+sqlx = { workspace = true, features = ["chrono", "ipnetwork", "json", "postgres", "runtime-tokio", "tls-rustls", "uuid"] }
 uuid = { workspace = true, features = ["serde", "fast-rng", "v7"] }
 
 [lib]

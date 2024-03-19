@@ -1,5 +1,5 @@
 use axum::extract::FromRef;
-use metadata_data_layer::PoolState;
+use metadata_data_layer_utils::PoolState;
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]

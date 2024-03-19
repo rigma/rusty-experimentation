@@ -1,6 +1,6 @@
 use sqlx::{
     self,
-    pool::{Pool, PoolConnection},
+    pool::Pool,
     postgres::{PgConnectOptions, Postgres},
 };
 use std::{borrow::Cow, process::Command, sync::Arc};
@@ -22,13 +22,8 @@ impl PoolState {
     }
 
     #[inline]
-    pub fn get_ref(&self) -> Arc<Pool<Postgres>> {
+    pub fn downcast_ref(&self) -> Arc<Pool<Postgres>> {
         Arc::clone(&self.inner)
-    }
-
-    #[inline]
-    pub async fn begin_connection(&self) -> Result<PoolConnection<Postgres>, sqlx::Error> {
-        self.inner.acquire().await
     }
 }
 
