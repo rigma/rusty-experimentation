@@ -10,3 +10,6 @@ name = "metadata_http"
 axum.workspace = true
 metadata-data-layer = { path = "../metadata-data-layer" }
 metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }
+metadata-http-utils = { path = "../metadata-http-utils" }
+sqlx.workspace = true
+thiserror = "*"
