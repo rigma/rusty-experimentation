@@ -1,3 +1,5 @@
-mod problem;
+mod error;
+pub(crate) mod problems;
 
-pub use problem::Problem;
+pub use error::HttpError;
+pub use problems::Problem;

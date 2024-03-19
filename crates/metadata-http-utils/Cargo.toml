@@ -7,5 +7,7 @@ edition.workspace = true
 name = "metadata_http_utils"
 
 [dependencies]
-axum-core.workspace = true
+axum.workspace = true
 http = "^1.1.0"
+serde_json = "*"
+sqlx.workspace = true

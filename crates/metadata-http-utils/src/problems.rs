@@ -1,4 +1,6 @@
-use http::{HeaderMap, StatusCode};
+use http::{header, HeaderMap, HeaderValue, StatusCode};
+
+pub(crate) const CONTENT_TYPE: HeaderValue = HeaderValue::from_static("application/problem+json");
 
 /// `Problem` is a trait to help define the problem details format
 /// described in [RFC 9457] to structures that are implementing
@@ -10,7 +12,7 @@ use http::{HeaderMap, StatusCode};
 /// required in the document.
 ///
 /// It's used by the [generic error](metadata_http_utils::HttpError)
-/// to transform an error value into an [axum_core::response::Response].
+/// to transform an error value into an [axum::response::Response].
 /// Because it's supposed to be only implemented onto error values,
 /// it's mandatory to have [std::error::Error] trait implemented along
 /// side [Problem] by either directly implementing it or by using a
@@ -85,7 +87,7 @@ pub trait Problem: std::error::Error {
     /// A HTTP response status code associated to this occurence
     /// of the problem. If this provided method is returning a
     /// correct HTTP status code, it'll be used to set up the
-    /// [axum_core::response::Response] status code.
+    /// [axum::response::Response] status code.
     fn status(&self) -> Option<StatusCode> {
         None
     }
@@ -98,9 +100,28 @@ pub trait Problem: std::error::Error {
     }
 
     /// A collection of HTTP headers that can are added to a
-    /// [axum_core::response::Response] if the value returned
+    /// [axum::response::Response] if the value returned
     /// by the method is not `None`.
     fn headers(&self) -> Option<HeaderMap> {
         None
     }
+
+    fn parts(&self) -> (String, String, String, Option<StatusCode>, Option<String>, Option<HeaderMap>) {
+        (
+            self.ty(),
+            self.title(),
+            self.detail(),
+            self.status(),
+            self.instance(),
+            self.headers(),
+        )
+    }
+}
+
+pub(crate) fn default_headers() -> HeaderMap {
+    let mut headers = HeaderMap::new();
+    headers.append(header::CACHE_CONTROL, "no-store".parse().unwrap());
+    headers.append(header::CONTENT_TYPE, CONTENT_TYPE);
+
+    headers
 }
