@@ -1,0 +1,11 @@
+[package]
+name = "metadata-http-utils"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "metadata_http_utils"
+
+[dependencies]
+axum-core.workspace = true
+http = "^1.1.0"
