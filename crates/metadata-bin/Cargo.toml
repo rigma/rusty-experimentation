@@ -9,10 +9,25 @@ path = "src/main.rs"
 
 [dependencies]
 axum.workspace = true
+http.workspace = true
 metadata-data-layer = { path = "../metadata-data-layer" }
 metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }
 metadata-http = { path = "../metadata-http" }
 tokio.workspace = true
+tower = "*"
 tracing.workspace = true
 tracing-subscriber = { version = "^0.3.18", features = ["env-filter", "json", "parking_lot", "smallvec"] }
 dotenvy = "^0.15.7"
+
+[dependencies.tower-http]
+version = "*"
+features = [
+    "compression-br",
+    "compression-gzip",
+    "compression-zstd",
+    "cors",
+    "decompression-br",
+    "decompression-gzip",
+    "decompression-zstd",
+    "trace",
+]

@@ -8,6 +8,6 @@ name = "metadata_http_utils"
 
 [dependencies]
 axum.workspace = true
-http = "^1.1.0"
+http.workspace = true
 serde_json = "*"
 sqlx.workspace = true
