@@ -1,5 +1,8 @@
 use crate::problems::{self, Problem};
-use axum::{response::{IntoResponse, Response}, Json};
+use axum::{
+    response::{IntoResponse, Response},
+    Json,
+};
 use http::{header, StatusCode};
 use serde_json::json;
 
@@ -17,7 +20,7 @@ impl From<sqlx::Error> for HttpError {
 
 impl<P> From<P> for HttpError
 where
-    P: Problem + 'static
+    P: Problem + 'static,
 {
     fn from(value: P) -> Self {
         Self::ProblemError(Box::new(value))
@@ -42,40 +45,34 @@ impl IntoResponse for HttpError {
                     problems::default_headers()
                 };
 
-                let body = Json(
-                    match (status, instance) {
-                        (Some(status), Some(instance)) => json!({
-                            "type": ty,
-                            "title": title,
-                            "detail": detail,
-                            "status": status.as_u16(),
-                            "instance": instance,
-                        }),
-                        (Some(status), None) => json!({
-                            "type": ty,
-                            "title": title,
-                            "detail": detail,
-                            "status": status.as_u16(),
-                        }),
-                        (None, Some(instance)) => json!({
-                            "type": ty,
-                            "title": title,
-                            "detail": detail,
-                            "instance": instance,
-                        }),
-                        _ => json!({
-                            "type": ty,
-                            "title": title,
-                            "detail": detail,
-                        }),
-                    }
-                );
+                let body = Json(match (status, instance) {
+                    (Some(status), Some(instance)) => json!({
+                        "type": ty,
+                        "title": title,
+                        "detail": detail,
+                        "status": status.as_u16(),
+                        "instance": instance,
+                    }),
+                    (Some(status), None) => json!({
+                        "type": ty,
+                        "title": title,
+                        "detail": detail,
+                        "status": status.as_u16(),
+                    }),
+                    (None, Some(instance)) => json!({
+                        "type": ty,
+                        "title": title,
+                        "detail": detail,
+                        "instance": instance,
+                    }),
+                    _ => json!({
+                        "type": ty,
+                        "title": title,
+                        "detail": detail,
+                    }),
+                });
 
-                (
-                    status.unwrap_or(StatusCode::BAD_REQUEST),
-                    headers,
-                    body,
-                ).into_response()
+                (status.unwrap_or(StatusCode::BAD_REQUEST), headers, body).into_response()
             }
             Self::SQLError(error) => {
                 use sqlx::Error;
@@ -94,7 +91,7 @@ impl IntoResponse for HttpError {
                                 "detail": format!("{error}"),
                             }),
                         )
-                    },
+                    }
                     // TODO(rigma): you should support more SQLx errors in the future
                     _ => (
                         StatusCode::INTERNAL_SERVER_ERROR,
@@ -103,7 +100,7 @@ impl IntoResponse for HttpError {
                             "title": "Unknown database error",
                             "detail": format!("{error}"),
                         }),
-                    )
+                    ),
                 };
 
                 (status_code, headers, Json(body)).into_response()

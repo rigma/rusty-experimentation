@@ -106,7 +106,16 @@ pub trait Problem: std::error::Error {
         None
     }
 
-    fn parts(&self) -> (String, String, String, Option<StatusCode>, Option<String>, Option<HeaderMap>) {
+    fn parts(
+        &self,
+    ) -> (
+        String,
+        String,
+        String,
+        Option<StatusCode>,
+        Option<String>,
+        Option<HeaderMap>,
+    ) {
         (
             self.ty(),
             self.title(),
