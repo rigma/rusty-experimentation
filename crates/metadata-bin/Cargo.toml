@@ -3,6 +3,10 @@ name = "metadata-bin"
 version.workspace = true
 edition.workspace = true
 
+[[bin]]
+name = "backbone-metadata"
+path = "src/main.rs"
+
 [dependencies]
 axum.workspace = true
 metadata-data-layer = { path = "../metadata-data-layer" }
@@ -11,7 +15,4 @@ metadata-http = { path = "../metadata-http" }
 tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "^0.3.18", features = ["env-filter", "json", "parking_lot", "smallvec"] }
-
-[[bin]]
-name = "backbone-metadata"
-path = "src/main.rs"
+dotenvy = "^0.15.7"

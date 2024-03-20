@@ -1,25 +1,22 @@
-use metadata_data_layer_utils::PoolState;
-use metadata_http::{init_router, AppState};
-use tokio::net::TcpListener;
-use tracing::level_filters::LevelFilter;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+mod commands;
 
-#[tokio::main]
-async fn main() {
-    tracing_subscriber::registry()
-        .with(
-            EnvFilter::builder()
-                .with_default_directive(LevelFilter::TRACE.into())
-                .from_env_lossy(),
-        )
-        .with(tracing_subscriber::fmt::layer().map_event_format(|format| format.json()))
-        .init();
+#[cfg(not(debug_assertions))]
+fn main() {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(commands::serve());
+}
 
-    let state = AppState::new(PoolState::from_env().finalize());
-    let app = init_router(state);
+#[cfg(debug_assertions)]
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dotenvy::dotenv()?;
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(commands::serve());
 
-    let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
-
-    tracing::info!("Listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await.unwrap();
+    Ok(())
 }
