@@ -106,6 +106,8 @@ pub trait Problem: std::error::Error {
         None
     }
 
+    /// A provided trait method that is the values returned
+    /// by the others methods in a tuple.
     fn parts(
         &self,
     ) -> (
@@ -127,6 +129,8 @@ pub trait Problem: std::error::Error {
     }
 }
 
+/// Returns the default HTTP headers that should be used for an HTTP
+/// response that is containing the problem details.
 pub(crate) fn default_headers() -> HeaderMap {
     let mut headers = HeaderMap::new();
     headers.append(header::CACHE_CONTROL, "no-store".parse().unwrap());

@@ -6,9 +6,27 @@ use axum::{
 use http::{header, StatusCode};
 use serde_json::json;
 
+/// A generic HTTP error that can be emitted during the application
+/// runtime. It can be transformed into a [axum::response::Response]
+/// thanks to [axum::response::IntoResponse].
+///
+/// It can be created from either an error value that is implementing
+/// [Problem] trait or a [sqlx::Error].
 #[derive(Debug)]
 pub enum HttpError {
+    /// An error that is described by an error value implementing
+    /// [Problem] trait. It'll be formatted into a HTTP response
+    /// following [RFC 9457] recommendations thanks to the
+    /// provided methods of [Problem].
+    ///
+    /// [RFC 9547]: https://datatracker.ietf.org/doc/html/rfc9457
     ProblemError(Box<dyn Problem>),
+
+    /// An error emitted by the SQL backend. It's generally transformed
+    /// into a HTTP response representing a server error, that we'll
+    /// be formatted into a problem details as defined in [RFC 9457].
+    ///
+    /// [RFC 9457]: https://datatracker.ietf.org/doc/html/rfc9457
     SQLError(sqlx::Error),
 }
 
