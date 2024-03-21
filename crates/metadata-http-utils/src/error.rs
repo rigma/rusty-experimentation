@@ -5,6 +5,7 @@ use axum::{
 };
 use http::{header, StatusCode};
 use serde_json::json;
+use std::borrow::Cow;
 
 /// A generic HTTP error that can be emitted during the application
 /// runtime. It can be transformed into a [axum::response::Response]
@@ -97,6 +98,29 @@ impl IntoResponse for HttpError {
 
                 let mut headers = problems::default_headers();
                 let (status_code, body) = match error {
+                    Error::Database(error) => {
+                        let code = error.code();
+
+                        match code {
+                            Some(Cow::Borrowed("28P01")) => (
+                                StatusCode::BAD_GATEWAY,
+                                json!({
+                                    "type": "https://errors.taster.com/metadata/sql/bad-connection",
+                                    "title": "Bad SQL Connection.",
+                                    "detail": "Unable to establish connection with the database.",
+                                }),
+                            ),
+                            // TODO(rigma): we'll likely have more SQLSTATE error codes to handle in the future.
+                            _ => (
+                                StatusCode::INTERNAL_SERVER_ERROR,
+                                json!({
+                                    "type": "https://errors.taster.com/sql/database-error",
+                                    "title": "Database Error.",
+                                    "detail": "An error with the database occured while processing a query.",
+                                }),
+                            ),
+                        }
+                    }
                     Error::PoolClosed | Error::PoolTimedOut => {
                         // TODO(rigma): arbitrary value used here
                         headers.append(header::RETRY_AFTER, 120.into());
