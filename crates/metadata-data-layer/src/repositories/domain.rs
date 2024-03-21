@@ -51,7 +51,7 @@ impl DomainRepository {
 impl Repository for DomainRepository {
     type DB = Postgres;
 
-    fn from_pool(pool: Arc<Pool<Self::DB>>) -> Self {
+    fn from_ref(pool: Arc<Pool<Self::DB>>) -> Self {
         Self { pool }
     }
 }

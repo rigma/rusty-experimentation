@@ -52,7 +52,7 @@ impl BlockRepository {
 impl Repository for BlockRepository {
     type DB = Postgres;
 
-    fn from_pool(pool: Arc<sqlx::Pool<Self::DB>>) -> Self {
+    fn from_ref(pool: Arc<sqlx::Pool<Self::DB>>) -> Self {
         Self { pool }
     }
 }

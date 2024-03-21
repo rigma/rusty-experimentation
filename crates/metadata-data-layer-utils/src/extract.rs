@@ -20,6 +20,6 @@ where
     async fn from_request_parts(_: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
         let pool_state = Arc::from_ref(state);
 
-        Ok(Self(T::from_pool(pool_state.downcast_ref())))
+        Ok(Self(T::from_ref(pool_state.downcast_ref())))
     }
 }
