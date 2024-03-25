@@ -1,16 +1,35 @@
 use chrono::{DateTime, Utc};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 use sqlx::{postgres::PgRow, FromRow, Row};
 use std::fmt;
 use uuid::Uuid;
 
-#[derive(Clone, Debug, serde::Serialize)]
-#[serde(tag = "type")]
+#[derive(Clone, Debug)]
 pub enum Parent {
     Block(Uuid),
     Domain(Uuid),
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+impl Serialize for Parent {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut state = serializer.serialize_struct("Parent", 2)?;
+
+        match self {
+            Self::Block(uuid) => {
+                state.serialize_field("type", "block")?;
+                state.serialize_field("block_uuid", uuid)?;
+            }
+            Self::Domain(uuid) => {
+                state.serialize_field("type", "domain")?;
+                state.serialize_field("domain_uuid", uuid)?;
+            }
+        }
+
+        state.end()
+    }
+}
+
+#[derive(Clone, Debug)]
 pub struct Block {
     pub id: Uuid,
     pub parent: Parent,
@@ -50,6 +69,22 @@ impl FromRow<'_, PgRow> for Block {
             created_at,
             updated_at,
         })
+    }
+}
+
+impl Serialize for Block {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("Block", 5)?;
+
+        state.serialize_field("id", &self.id)?;
+        state.serialize_field("parent", &self.parent)?;
+        state.serialize_field("name", &self.name)?;
+        state.serialize_field("created_at", &self.created_at)?;
+        state.serialize_field("updated_at", &self.updated_at)?;
+        state.end()
     }
 }
 
