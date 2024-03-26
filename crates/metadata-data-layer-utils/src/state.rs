@@ -5,28 +5,57 @@ use sqlx::{
 };
 use std::{borrow::Cow, process::Command, sync::Arc};
 
+/// A structure that is holding an atomic reference count to a SQLx
+/// [Pool](sqlx::pool::Pool) for a [Postgres](sqlx::postgres::Postgres)
+/// data backend.
+///
+/// You can either use as a state of your application or embed it into
+/// another application state.
 #[derive(Clone, Debug)]
 pub struct PoolState {
     inner: Arc<Pool<Postgres>>,
 }
 
 impl PoolState {
+    /// Instanciate a blank builder that can be used to parametrize a
+    /// new instance of a [PoolState] struct.
     #[inline]
     pub fn builder<'a>() -> PoolStateBuilder<'a> {
         PoolStateBuilder::new()
     }
 
+    /// Instanciate a builder filled with variables taken from the
+    /// environment, if they are available.
+    ///
+    /// It will use the following variables:
+    ///
+    /// - `POSTGRES_APPNAME` will be used to identify the application
+    /// in the context of the PostgreSQL connection.
+    /// - `POSTGRES_HOST` will be used to get the PostgreSQL database
+    /// hostname. The default value is `"localhost"`
+    /// - `POSTGRES_PORT` will be used to get the network port to use
+    /// to connect with the database. The default value is `5432`
+    /// - `POSTGRES_USER` will be used as the username for the
+    /// authentication with the PostgreSQL database. The default value
+    /// is retrieve from the standard output of `whoami` UNIX command
+    /// - `POSTGRES_PASSWORD` will be used as the password for the
+    /// authentication process with the PostgreSQL database.
+    /// - `POSTGRES_DATABASE` will be used as the database name
+    /// to use once connected to PostgreSQL database.
     #[inline]
     pub fn from_env<'a>() -> PoolStateBuilder<'a> {
         Default::default()
     }
 
+    /// Retrieve an immutable clone of the inner atomic reference
+    /// count stored in the structure.
     #[inline]
     pub fn downcast_ref(&self) -> Arc<Pool<Postgres>> {
         Arc::clone(&self.inner)
     }
 }
 
+#[doc(hidden)]
 #[inline]
 fn whoami<'a>() -> Cow<'a, str> {
     let whoami = Command::new("whoami")
@@ -49,6 +78,7 @@ pub struct PoolStateBuilder<'a> {
 }
 
 impl<'a> PoolStateBuilder<'a> {
+    #[doc(hidden)]
     #[inline]
     pub fn new() -> Self {
         Self {
@@ -61,11 +91,14 @@ impl<'a> PoolStateBuilder<'a> {
         }
     }
 
+    #[doc(hidden)]
     #[inline]
     pub fn from_env() -> Self {
         Self::default()
     }
 
+    /// Define the application name to use to associate the connection
+    /// with it.
     #[inline]
     pub fn application_name<S>(mut self, application_name: S) -> Self
     where
@@ -75,6 +108,7 @@ impl<'a> PoolStateBuilder<'a> {
         self
     }
 
+    /// Define the hostname of the PostgreSQL database to connect with.
     #[inline]
     pub fn host<S>(mut self, host: S) -> Self
     where
@@ -84,12 +118,16 @@ impl<'a> PoolStateBuilder<'a> {
         self
     }
 
+    /// Define the network port to use to connect with the PostgreSQL
+    /// database.
     #[inline]
     pub fn port(mut self, port: u16) -> Self {
         self.port = port;
         self
     }
 
+    /// Define the username to use for the authentication with the
+    /// PostgreSQL database.
     #[inline]
     pub fn user<S>(mut self, user: S) -> Self
     where
@@ -99,6 +137,8 @@ impl<'a> PoolStateBuilder<'a> {
         self
     }
 
+    /// Define the password to use for the authentication with the
+    /// PostgreSQL database.
     #[inline]
     pub fn password<S>(mut self, password: S) -> Self
     where
@@ -108,6 +148,8 @@ impl<'a> PoolStateBuilder<'a> {
         self
     }
 
+    /// Define the database name which will receive our SQL queries
+    /// once we're authenticated.
     #[inline]
     pub fn dbname<S>(mut self, dbname: S) -> Self
     where
@@ -117,6 +159,9 @@ impl<'a> PoolStateBuilder<'a> {
         self
     }
 
+    /// Consume the current instance of the builder and use the values
+    /// collected in it to instanciate a new [PoolState] instance that
+    /// is holding connection pool to a PostgreSQL database.
     pub fn finalize(self) -> PoolState {
         let mut options = PgConnectOptions::new()
             .host(&self.host)
