@@ -17,6 +17,6 @@ impl AppState {
 
 impl FromRef<AppState> for Arc<PoolState> {
     fn from_ref(input: &AppState) -> Self {
-        input.pool.clone()
+        Arc::clone(&input.pool)
     }
 }
