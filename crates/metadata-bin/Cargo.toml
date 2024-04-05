@@ -36,10 +36,11 @@ version = "*"
 features = [
     "compression-br",
     "compression-gzip",
-    "compression-zstd",
     "cors",
     "decompression-br",
     "decompression-gzip",
-    "decompression-zstd",
     "trace",
 ]
+
+[target.'cfg(any(target = "aarch64-unknown-linux-musl", target = "x86_64-unknown-linux-musl"))'.dependencies]
+tikv-jemallocator = "^0.5"

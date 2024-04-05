@@ -3,14 +3,27 @@ name = "metadata-data-layer"
 version.workspace = true
 edition.workspace = true
 
+[lib]
+name = "metadata_data_layer"
+
 [dependencies]
 async-trait.workspace = true
 axum-core.workspace = true
 chrono = { workspace = true, features = ["serde"] }
 metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }
 serde.workspace = true
-sqlx = { workspace = true, features = ["chrono", "ipnetwork", "json", "postgres", "runtime-tokio", "tls-rustls", "uuid"] }
 uuid = { workspace = true, features = ["serde", "fast-rng", "v7"] }
 
-[lib]
-name = "metadata_data_layer"
+[dependencies.sqlx]
+workspace = true
+features = [
+    "any", 
+    "chrono",
+    "macros",
+    "ipnetwork",
+    "json",
+    "postgres",
+    "runtime-tokio",
+    "tls-rustls",
+    "uuid",
+]
