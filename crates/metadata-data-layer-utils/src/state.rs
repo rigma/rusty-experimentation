@@ -1,9 +1,8 @@
 use sqlx::{
-    self,
     pool::Pool,
     postgres::{PgConnectOptions, Postgres},
 };
-use std::{borrow::Cow, process::Command, sync::Arc};
+use std::{borrow::Cow, sync::Arc};
 
 /// A structure that is holding an atomic reference count to a SQLx
 /// [Pool](sqlx::pool::Pool) for a [Postgres](sqlx::postgres::Postgres)
@@ -37,7 +36,7 @@ impl PoolState {
     /// to connect with the database. The default value is `5432`
     /// - `POSTGRES_USER` will be used as the username for the
     /// authentication with the PostgreSQL database. The default value
-    /// is retrieve from the standard output of `whoami` UNIX command
+    /// is `postgres`.
     /// - `POSTGRES_PASSWORD` will be used as the password for the
     /// authentication process with the PostgreSQL database.
     /// - `POSTGRES_DATABASE` will be used as the database name
@@ -53,18 +52,6 @@ impl PoolState {
     pub fn downcast_ref(&self) -> Arc<Pool<Postgres>> {
         Arc::clone(&self.inner)
     }
-}
-
-#[doc(hidden)]
-#[inline]
-fn whoami<'a>() -> Cow<'a, str> {
-    let whoami = Command::new("whoami")
-        .output()
-        .expect("Unable to invoke whoami command");
-
-    String::from_utf8(whoami.stdout)
-        .expect("Unable to parse whoami output")
-        .into()
 }
 
 #[derive(Debug)]
@@ -85,7 +72,7 @@ impl<'a> PoolStateBuilder<'a> {
             application_name: None,
             host: "localhost".into(),
             port: 5432,
-            user: whoami(),
+            user: "postgres".into(),
             password: None,
             dbname: None,
         }
@@ -199,13 +186,9 @@ impl<'a> Default for PoolStateBuilder<'a> {
                 5432
             }
         };
-        let user = {
-            if let Ok(user) = std::env::var("POSTGRES_USER") {
-                user.into()
-            } else {
-                whoami()
-            }
-        };
+        let user = std::env::var("POSTGRES_USER")
+            .unwrap_or("postgres".to_string())
+            .into();
         let password = std::env::var("POSTGRES_PASSWORD")
             .ok()
             .map(|password| password.into());

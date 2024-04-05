@@ -1,6 +1,6 @@
 use crate::models::Block;
 use metadata_data_layer_utils::Repository;
-use sqlx::{self, postgres::Postgres, Pool};
+use sqlx::{postgres::Postgres, Pool};
 use std::sync::Arc;
 use uuid::Uuid;
 
