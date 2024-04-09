@@ -1,4 +1,5 @@
 mod cli;
+mod utils;
 
 #[cfg(any(
     target = "aarch64-unknown-linux-musl",

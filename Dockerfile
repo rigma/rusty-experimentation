@@ -14,5 +14,6 @@ FROM cgr.dev/chainguard/static
 
 COPY --from=builder --chown=nonroot:nonroot /volume/backbone-metadata /app/backbone-metadata
 
-EXPOSE 8080 80
-ENTRYPOINT [ "/app/backbone-metadata" ]
+EXPOSE 80
+
+ENTRYPOINT [ "/app/backbone-metadata", "--host", "0.0.0.0", "--port", "80"]

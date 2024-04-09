@@ -1,7 +1,9 @@
+use crate::utils::IpAddrParser;
 use clap::{Arg, Command};
 use http::Method;
 use metadata_data_layer_utils::PoolState;
 use metadata_http::{init_router, AppState};
+use std::net::{IpAddr, SocketAddr};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
 use tower_http::{
@@ -17,6 +19,22 @@ fn cli() -> Command {
         .version(clap::crate_version!())
         .author(clap::crate_authors!())
         .about(clap::crate_description!())
+        .arg(
+            Arg::new("host")
+            .short('H')
+            .long("host")
+            .value_parser(IpAddrParser::new())
+            .help("An IP address mask to use for the port binding")
+            .required(true)
+        )
+        .arg(
+            Arg::new("port")
+            .short('p')
+            .long("port")
+            .value_parser(clap::value_parser!(u16))
+            .help("The port to use on the hosting machine to bind the socket to the process")
+            .default_value("80")
+        )
         .arg(
             Arg::new("postgres_host")
                 .long("postgres-host")
@@ -95,7 +113,12 @@ pub(crate) async fn main() {
             ),
         );
 
-    let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    let listener = TcpListener::bind(
+        SocketAddr::new(
+            *args.get_one::<IpAddr>("host").unwrap(),
+            *args.get_one("port").unwrap(),
+        )
+    ).await.unwrap();
 
     tracing::info!("Listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
