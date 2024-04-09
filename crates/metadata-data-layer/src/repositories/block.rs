@@ -10,6 +10,7 @@ pub struct BlockRepository {
 }
 
 impl BlockRepository {
+    #[tracing::instrument]
     pub async fn get_block(&self, block_id: &Uuid) -> Result<Option<Block>, sqlx::Error> {
         sqlx::query_as::<_, Block>(
             r#"
@@ -29,6 +30,7 @@ impl BlockRepository {
         .await
     }
 
+    #[tracing::instrument]
     pub async fn get_block_by_name(&self, block_name: &str) -> Result<Option<Block>, sqlx::Error> {
         sqlx::query_as(
             r#"

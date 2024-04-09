@@ -36,6 +36,7 @@ impl Problem for BlockError {
     }
 }
 
+#[tracing::instrument(name = "show_block", skip(repository))]
 pub(super) async fn show(
     Path((_, block_name)): Path<(String, String)>,
     Repository(repository): Repository<BlockRepository>,

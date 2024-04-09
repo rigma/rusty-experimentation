@@ -10,6 +10,7 @@ pub struct DomainRepository {
 }
 
 impl DomainRepository {
+    #[tracing::instrument]
     pub async fn get_domain(&self, domain_id: &Uuid) -> Result<Option<Domain>, sqlx::Error> {
         sqlx::query_as::<_, Domain>(
             r#"
@@ -27,6 +28,7 @@ impl DomainRepository {
         .await
     }
 
+    #[tracing::instrument]
     pub async fn get_domain_by_name(
         &self,
         domain_name: &str,

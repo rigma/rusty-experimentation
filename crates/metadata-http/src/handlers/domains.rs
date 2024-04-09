@@ -36,6 +36,7 @@ impl Problem for DomainError {
     }
 }
 
+#[tracing::instrument(name = "show_domain", skip(repository))]
 pub(super) async fn show(
     Path(domain_name): Path<String>,
     Repository(repository): Repository<DomainRepository>,

@@ -13,3 +13,4 @@ metadata-data-layer-utils = { path = "../metadata-data-layer-utils" }
 metadata-http-utils = { path = "../metadata-http-utils" }
 sqlx.workspace = true
 thiserror = "*"
+tracing.workspace = true
