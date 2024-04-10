@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/volume/target \
   && mv /volume/target/${TARGET_ARCH:-"x86_64"}-unknown-linux-musl/release/backbone-metadata .
 
 FROM cgr.dev/chainguard/static
+LABEL org.opencontainers.image.authors="rigma"
 
 COPY --from=builder --chown=nonroot:nonroot /volume/backbone-metadata /app/backbone-metadata
 

@@ -1,0 +1,17 @@
+FROM rust:slim AS builder
+
+WORKDIR /usr/src
+COPY . /usr/src
+
+RUN --mount=type=cache,target=/volume/target \
+  --mount=type=cache,target=/root/.cargo/registry \
+  cargo build --release
+
+FROM gcr.io/distroless/cc-debian12
+LABEL org.opencontainers.image.authors="rigma"
+
+COPY --from=builder /usr/src/target/release/backbone-metadata /app/backbone-metadata
+
+EXPOSE 80
+
+CMD [ "/app/backbone-metadata", "--host", "0.0.0.0", "--port", "80" ]
