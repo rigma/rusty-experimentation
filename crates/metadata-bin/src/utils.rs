@@ -1,5 +1,9 @@
-use clap::{builder::TypedValueParser, error::{ContextKind, ContextValue, ErrorKind}, Arg, Command, Error};
-use std::net::{Ipv4Addr, Ipv6Addr, IpAddr};
+use clap::{
+    builder::TypedValueParser,
+    error::{ContextKind, ContextValue, ErrorKind},
+    Arg, Command, Error,
+};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct IpAddrParser;
@@ -24,10 +28,16 @@ impl TypedValueParser for IpAddrParser {
         } else {
             let mut err = Error::new(ErrorKind::ValueValidation).with_cmd(cmd);
             if let Some(arg) = arg {
-                err.insert(ContextKind::InvalidArg, ContextValue::String(arg.to_string()));
+                err.insert(
+                    ContextKind::InvalidArg,
+                    ContextValue::String(arg.to_string()),
+                );
             }
 
-            err.insert(ContextKind::InvalidValue, ContextValue::String("must be a valid UTF-8 string".to_owned()));
+            err.insert(
+                ContextKind::InvalidValue,
+                ContextValue::String("must be a valid UTF-8 string".to_owned()),
+            );
             return Err(err);
         };
 
@@ -37,10 +47,16 @@ impl TypedValueParser for IpAddrParser {
             _ => {
                 let mut err = Error::new(ErrorKind::ValueValidation).with_cmd(cmd);
                 if let Some(arg) = arg {
-                    err.insert(ContextKind::InvalidArg, ContextValue::String(arg.to_string()));
+                    err.insert(
+                        ContextKind::InvalidArg,
+                        ContextValue::String(arg.to_string()),
+                    );
                 }
 
-                err.insert(ContextKind::InvalidValue, ContextValue::String("must be a valid IPv4 or IPv6 address".to_owned()));
+                err.insert(
+                    ContextKind::InvalidValue,
+                    ContextValue::String("must be a valid IPv4 or IPv6 address".to_owned()),
+                );
                 Err(err)
             }
         }
